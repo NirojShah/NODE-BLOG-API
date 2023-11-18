@@ -51,6 +51,10 @@ userSchema.pre("save",async function(next){
     next()
 })
 
+userSchema.method.comparePassword = async function(passwordDB,password){
+    return await bcrypt.compare(passwordDB,password)
+}
+
 
 // Pre save hook
 // userSchema.pre("save",function(){

@@ -78,7 +78,9 @@ const get_user = async (req, res) => {
 let updateProfile = async (req, res) => {
     try {
 
-        let updated_profile = await userModel.findByIdAndUpdate(req.params.id, {...req.body}, {
+        let updated_profile = await userModel.findByIdAndUpdate(req.params.id, {
+            ...req.body
+        }, {
             new: true
         })
         res.status(200).json({
@@ -113,28 +115,32 @@ const deleteUser = async (req, res) => {
     }
 }
 
-const login = async (req,res)=>{
+const login = async (req, res) => {
     try {
-        const existingUser = await userModel.findOne({email:req.body.email})
-        if(!existingUser){
-            return res.status(200).json({
-                status:"failed",
-                data:{
-                    msg:"you are not an existing user, please signup"
+        const existingUser = await userModel.findOne({
+            email: req.body.email
+        })
+        const isMatch = await existingUser.comparePassword(existingUser.password, req.body.password)
+        if ((existingUser === false) && (isMatch === false)) {  
+            return res.status(400).json({
+                status: "failed",
+                data: {
+                    msg: "you are not an existing user, please signup"
                 }
             })
         }
         res.status(200).json({
-            status:"success",
-            data:{
+            status: "success",
+            data: {
                 existingUser
             }
         })
+
     } catch (error) {
         res.status(400).json({
-            status:"failed",
-            data:{
-                msg:error.message
+            status: "failed",
+            data: {
+                msg: "ff"
             }
         })
     }
@@ -145,5 +151,6 @@ module.exports = {
     all_User,
     get_user,
     updateProfile,
-    deleteUser
+    deleteUser,
+    login
 }
