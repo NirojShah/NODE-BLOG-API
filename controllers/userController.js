@@ -113,6 +113,33 @@ const deleteUser = async (req, res) => {
     }
 }
 
+const login = async (req,res)=>{
+    try {
+        const existingUser = await userModel.findOne({email:req.body.email})
+        if(!existingUser){
+            return res.status(200).json({
+                status:"failed",
+                data:{
+                    msg:"you are not an existing user, please signup"
+                }
+            })
+        }
+        res.status(200).json({
+            status:"success",
+            data:{
+                existingUser
+            }
+        })
+    } catch (error) {
+        res.status(400).json({
+            status:"failed",
+            data:{
+                msg:error.message
+            }
+        })
+    }
+}
+
 module.exports = {
     signup,
     all_User,

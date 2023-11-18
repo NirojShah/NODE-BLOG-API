@@ -4,6 +4,7 @@ const {
 } = require("mongoose")
 
 const validator = require("validator")
+const bcrypt = require("bcryptjs")
 
 let userSchema = new Schema({
     name: {
@@ -43,6 +44,11 @@ let userSchema = new Schema({
 
 }, {
     timestamps: true
+})
+
+userSchema.pre("save",async function(next){
+    this.password = await bcrypt.hash(this.password,10)
+    next()
 })
 
 
