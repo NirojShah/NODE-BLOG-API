@@ -44,16 +44,16 @@ let userSchema = new Schema({
 
 }, {
     timestamps: true
-})
+},)
+
+userSchema.methods.comparePassword = async function(userPassword,dbPassword){
+    return await bcrypt.compare(userPassword,dbPassword)
+}
 
 userSchema.pre("save",async function(next){
     this.password = await bcrypt.hash(this.password,10)
     next()
 })
-
-userSchema.method.comparePassword = async function(passwordDB,password){
-    return await bcrypt.compare(passwordDB,password)
-}
 
 
 // Pre save hook

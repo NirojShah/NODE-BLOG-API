@@ -120,14 +120,25 @@ const login = async (req, res) => {
         const existingUser = await userModel.findOne({
             email: req.body.email
         })
-        const isMatch = await existingUser.comparePassword(existingUser.password, req.body.password)
-        if ((existingUser === false) && (isMatch === false)) {  
+        
+        if (!existingUser) {  
             return res.status(400).json({
                 status: "failed",
                 data: {
                     msg: "you are not an existing user, please signup"
                 }
             })
+        }
+        else{
+            const isMatch = await existingUser.comparePassword(req.body.password,existingUser.password)
+            if(isMatch===false){
+                return res.status(400).json({
+                    status: "failed",
+                    data: {
+                        msg: "your password is incorrect.."
+                    }
+                })
+            }
         }
         res.status(200).json({
             status: "success",
@@ -140,7 +151,7 @@ const login = async (req, res) => {
         res.status(400).json({
             status: "failed",
             data: {
-                msg: "ff"
+                msg: error.message
             }
         })
     }
