@@ -130,24 +130,13 @@ const login = async (req, res) => {
             email: req.body.email
         })
         
-        if (!existingUser) {  
+        if (!existingUser || !await existingUser.comparePassword(req.body.password,existingUser.password)) {  
             return res.status(400).json({
                 status: "failed",
                 data: {
                     msg: "you are not an existing user, please signup"
                 }
             })
-        }
-        else{
-            const isMatch = await existingUser.comparePassword(req.body.password,existingUser.password)
-            if(isMatch===false){
-                return res.status(400).json({
-                    status: "failed",
-                    data: {
-                        msg: "your password is incorrect.."
-                    }
-                })
-            }
         }
         
         let token = await genToken(existingUser._id)
