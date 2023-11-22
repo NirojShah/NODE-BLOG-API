@@ -110,10 +110,31 @@ const deleteBlog = async (req, res) => {
         })
     }
 }
+
+const getByAuthor = async(req,res)=>{
+    try {
+        let author_Blog = await blogModel.find({author:req.params.id})
+        res.status(200).json({
+            status:"success",
+            data:{
+                author_Blog
+            }
+        })
+    } catch (error) {
+        res.status(400).json({
+            status:"failed",
+            data:{
+                msg:error.message
+            }
+        })
+    }
+}
+
 module.exports = {
     getBlogs,
     getBlog,
     updateBlog,
     deleteBlog,
-    postBlog
+    postBlog,
+    getByAuthor
 }
