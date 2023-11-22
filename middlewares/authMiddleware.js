@@ -9,7 +9,7 @@ const auth = async(req,res,next)=>{
         if(testToken && testToken.startsWith("Bearer")){
             token = testToken.split(" ")[1]
         }
-        console.log(token)
+        // console.log(token)
         if(!token){
             res.status(401).json({
                 status:"fail",
@@ -20,7 +20,6 @@ const auth = async(req,res,next)=>{
         }
 
         const decodedToken = await jwt.verify(token,process.env.JWT_SECRET)
-        console.log(decodedToken)
 
         const user = await userModel.findById(decodedToken.id)
         req.user=user
