@@ -112,8 +112,12 @@ const deleteBlog = async (req, res) => {
 }
 
 const getByAuthor = async(req,res)=>{
+
+    console.log("hello")
+
     try {
-        let author_Blog = await blogModel.find({author:req.params.id})
+        let user = req.user
+        let author_Blog = await blogModel.find({author:user._id})
         res.status(200).json({
             status:"success",
             data:{
@@ -121,7 +125,7 @@ const getByAuthor = async(req,res)=>{
             }
         })
     } catch (error) {
-        res.status(400).json({
+        res.status(401).json({
             status:"failed",
             data:{
                 msg:error.message
