@@ -1,11 +1,11 @@
 const express = require("express")
-const auth  = require("../middlewares/authMiddleware")
+const {auth,verifyRole}  = require("../middlewares/authMiddleware")
 const blogModel = require("../models/blog")
 const {deleteBlog,getBlog,postBlog,updateBlog,getBlogs,getByAuthor} = require("../controllers/blogController")
 
 let blogRouter = express.Router()
 
-blogRouter.post("/",auth,postBlog)
+blogRouter.post("/",auth,verifyRole(["author","admin"]),postBlog)
 blogRouter.get("/author",auth,getByAuthor)
 blogRouter.get("/",auth,getBlogs)
 blogRouter.get("/:id",auth,getBlog)

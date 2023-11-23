@@ -38,7 +38,10 @@ let userSchema = new Schema({
     },
     role: {
         type: String,
-        enum: ["user", "admin", "author"],
+        enum: {
+            values:["user", "admin", "author"],
+            message:`{VALUE} role is not defined`
+        },
         default: "admin"
     }
 
