@@ -47,8 +47,8 @@ const getBlog = async (req, res) => {
 
 const getBlogs = async (req, res) => {
     try {
-        let search = req.query.search || ""
-        let all_Blog = await blogModel.find({title:{$regex:search,$options:'i'}});
+        let search = req.query.search || ""  // if search then value will get stored otherwise store empty string.
+        let all_Blog = await blogModel.find({title:{$regex:search,$options:'i'}}); //search logic...
         res.status(200).json({ 
             status: "success",
             data: {
