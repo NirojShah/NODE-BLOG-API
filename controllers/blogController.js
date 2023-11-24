@@ -47,8 +47,9 @@ const getBlog = async (req, res) => {
 
 const getBlogs = async (req, res) => {
     try {
-        let all_Blog = await blogModel.find();
-        res.status(200).json({
+        let search = req.query.search || ""
+        let all_Blog = await blogModel.find({title:{$regex:search,$options:'i'}});
+        res.status(200).json({ 
             status: "success",
             data: {
                 all_Blog
@@ -62,7 +63,6 @@ const getBlogs = async (req, res) => {
             }
         })
     }
-
 }
 
 const updateBlog = async (req, res) => {
@@ -76,7 +76,6 @@ const updateBlog = async (req, res) => {
         const updated_blog = await blogModel.findByIdAndUpdate(id, payload, {
             new: true
         })
-
         res.status(200).json({
             status: "success",
             data: {
