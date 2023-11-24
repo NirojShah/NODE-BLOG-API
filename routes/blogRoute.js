@@ -5,8 +5,8 @@ const {deleteBlog,getBlog,postBlog,updateBlog,getBlogs,getByAuthor} = require(".
 
 let blogRouter = express.Router()
 
-blogRouter.post("/",auth,verifyRole(["author","admin"]),postBlog)
 blogRouter.get("/author",auth,getByAuthor)
+blogRouter.post("/",auth,verifyRole(["author","admin"]),postBlog)
 blogRouter.get("/",auth,getBlogs)
 blogRouter.get("/:id",auth,getBlog)
 blogRouter.patch("/:id",auth,updateBlog)

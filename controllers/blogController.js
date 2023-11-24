@@ -8,12 +8,15 @@ const postBlog = async (req, res) => {
             snippet: req.body.snippet,
             description: req.body.description,
             image: req.body.image,
-            author: user._id
+            author: user._id,
+            rating:req.body.rating
         })
         res.status(201).json({
             status: "success",
             data: {
-                newBlog
+                newBlog,
+                orange:"orange"
+
             }
         })
     } catch (error) {
@@ -47,11 +50,30 @@ const getBlog = async (req, res) => {
 
 const getBlogs = async (req, res) => {
     try {
+        let page = req.query.page*1 || 1 // *1 to convert string to number.
+        let limit = req.query.limit*1 || 3
+
+        let skip = (page-1)*limit // logic for skiping the page...
+
+        let author = req.query.author || ""
+
         let search = req.query.search || ""  // if search then value will get stored otherwise store empty string.
-        let all_Blog = await blogModel.find({title:{$regex:search,$options:'i'}}); //search logic...
+
+        let sort = req.query.sort*1 || -1
+
+        // let all_Blog = await blogModel.find({title:{$regex:search,$options:'i'}}).where("author").in([author]).skip(skip).limit(limit).sort({rating:rating});
+
+        let all_Blog = await blogModel.find({title:{$regex:search,$options:'i'}}).skip(skip).limit(limit).sort({"rating":sort})
+
+        //  search logic...
+        //  skip to skip no of items
+        //  limit the output or response
+         
+
+
         res.status(200).json({ 
             status: "success",
-            data: {
+            data: { 
                 all_Blog
             }
         })

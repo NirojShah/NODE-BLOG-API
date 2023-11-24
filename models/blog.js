@@ -29,6 +29,14 @@ const blogSchema = new Schema({
     image: {
         type: [String],
         default: "https://digitalmarketerschicago.com/wp-content/uploads/2019/07/difference-between-blogs-and-landing-pages.jpg"
+    },
+    rating:{
+        type:Number,
+        required:[true,"rating"],
+        enum:{
+            values:[1,2,3,4,5],
+            message:"{VALUE} is not correct"
+        }
     }
 })
 
