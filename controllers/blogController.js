@@ -9,13 +9,13 @@ const postBlog = async (req, res) => {
             description: req.body.description,
             image: req.body.image,
             author: user._id,
-            rating:req.body.rating
+            rating: req.body.rating
         })
         res.status(201).json({
             status: "success",
             data: {
                 newBlog,
-                orange:"orange"
+                orange: "orange"
 
             }
         })
@@ -48,32 +48,88 @@ const getBlog = async (req, res) => {
     }
 }
 
+const updateRating = async (req, res) => {
+    try {
+        let payload = {
+            ...req.body,
+            author: req.user._id
+        }
+        let id = req.params.id
+
+        const updated_blog = await blogModel.findByIdAndUpdate(id, payload, {
+            new: true
+        })
+        res.status(200).json({
+            status: "success",
+            data: {
+                updated_blog
+            }
+        })
+    } catch (error) {
+        res.status(401).json({
+            status: "failed",
+            data: {
+                msg: error.message
+            }
+        })
+    }
+}
+
 const getBlogs = async (req, res) => {
     try {
-        let page = req.query.page*1 || 1 // *1 to convert string to number.
-        let limit = req.query.limit*1 || 3
+        let page = req.query.page * 1 || 1 // *1 to convert string to number.
+        let limit = req.query.limit * 1 || 3
 
-        let skip = (page-1)*limit // logic for skiping the page...
+        let skip = (page - 1) * limit // logic for skiping the page...
 
         let author = req.query.author || ""
 
-        let search = req.query.search || ""  // if search then value will get stored otherwise store empty string.
+        let search = req.query.search || "" // if search then value will get stored otherwise store empty string.
 
-        let sort = req.query.sort*1 || -1
+        // let sort = req.query.sort * 1 || -1
+
+        let sort = req.query.sort || "rating"  // default decending order... // sort=-rating accending order
+
+
+        // rating,year // rating year
+
+        sort && sort.split(",").join(" ")
 
         // let all_Blog = await blogModel.find({title:{$regex:search,$options:'i'}}).where("author").in([author]).skip(skip).limit(limit).sort({rating:rating});
 
-        let all_Blog = await blogModel.find({title:{$regex:search,$options:'i'}}).skip(skip).limit(limit).sort({"rating":sort})
+        // let all_Blog = await blogModel.find({
+        //     title: {
+        //         $regex: search,
+        //         $options: 'i'
+        //     }
+        // }).skip(skip).limit(limit).sort({
+        //     "rating": sort
+        // })
+
+        let all_Blog = await blogModel.find({
+            title: {
+                $regex: search,
+                $options: 'i'
+            }
+        }).skip(skip).limit(limit).sort(sort)
+
+        
+
 
         //  search logic...
         //  skip to skip no of items
         //  limit the output or response
-         
 
 
-        res.status(200).json({ 
+        const totalBlog = await blogModel.countDocuments()
+
+
+        res.status(200).json({
             status: "success",
-            data: { 
+            page:page,
+            limit:limit,
+            totalBlog:totalBlog,
+            data: {
                 all_Blog
             }
         })
@@ -132,24 +188,26 @@ const deleteBlog = async (req, res) => {
     }
 }
 
-const getByAuthor = async(req,res)=>{
+const getByAuthor = async (req, res) => {
 
     console.log("hello")
 
     try {
         let user = req.user
-        let author_Blog = await blogModel.find({author:user._id})
+        let author_Blog = await blogModel.find({
+            author: user._id
+        })
         res.status(200).json({
-            status:"success",
-            data:{
+            status: "success",
+            data: {
                 author_Blog
             }
         })
     } catch (error) {
         res.status(401).json({
-            status:"failed",
-            data:{
-                msg:error.message
+            status: "failed",
+            data: {
+                msg: error.message
             }
         })
     }
@@ -161,5 +219,6 @@ module.exports = {
     updateBlog,
     deleteBlog,
     postBlog,
-    getByAuthor
+    getByAuthor,
+    updateRating
 }

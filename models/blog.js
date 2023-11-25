@@ -1,3 +1,6 @@
+const userModel = require("./userModel")
+
+
 const {
     model,
     Schema
@@ -33,9 +36,12 @@ const blogSchema = new Schema({
     rating:{
         type:Number,
         required:[true,"rating"],
-        enum:{
-            values:[1,2,3,4,5],
-            message:"{VALUE} is not correct"
+        validator:{
+            validate:function(){
+                if(userModel.role !== "user"){
+                    return value>=1 && value<=5;
+                }
+            }
         }
     }
 })
