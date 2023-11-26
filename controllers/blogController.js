@@ -8,22 +8,19 @@ const postBlog = async (req, res) => {
             snippet: req.body.snippet,
             description: req.body.description,
             image: req.body.image,
-            author: user._id,
-            rating: req.body.rating
+            author: user._id
         })
         res.status(201).json({
             status: "success",
             data: {
-                newBlog,
-                orange: "orange"
-
+                newBlog
             }
         })
     } catch (error) {
         res.status(401).json({
             status: "failed",
             data: {
-                msg: error.message
+                msg: error
             }
         })
     }
@@ -51,8 +48,7 @@ const getBlog = async (req, res) => {
 const updateRating = async (req, res) => {
     try {
         let payload = {
-            ...req.body,
-            author: req.user._id
+            rating:req.body.rating
         }
         let id = req.params.id
 
@@ -146,8 +142,12 @@ const getBlogs = async (req, res) => {
 const updateBlog = async (req, res) => {
     try {
         let payload = {
-            ...req.body,
-            author: req.user._id
+            title:req.body.title,
+            snippet:req.body.snippet,
+            description:req.body.description,
+            author: req.user._id,
+            image:req.body.image
+
         }
         let id = req.params.id
 

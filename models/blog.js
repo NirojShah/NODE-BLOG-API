@@ -36,12 +36,14 @@ const blogSchema = new Schema({
     rating:{
         type:Number,
         required:[true,"rating"],
+        default:1,
         validator:{
             validate:function(){
                 if(userModel.role !== "user"){
                     return value>=1 && value<=5;
                 }
-            }
+            },
+            message:"you are not authorize"
         }
     }
 })
