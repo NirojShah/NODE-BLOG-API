@@ -48,12 +48,13 @@ const getBlog = async (req, res) => {
 const updateRating = async (req, res) => {
     try {
         let payload = {
-            rating:req.body.rating
+            rating: req.body.rating
         }
         let id = req.params.id
 
         const updated_blog = await blogModel.findByIdAndUpdate(id, payload, {
-            new: true
+            new: true,
+            runValidators: true
         })
         res.status(200).json({
             status: "success",
@@ -84,7 +85,7 @@ const getBlogs = async (req, res) => {
 
         // let sort = req.query.sort * 1 || -1
 
-        let sort = req.query.sort || "rating"  // default decending order... // sort=-rating accending order
+        let sort = req.query.sort || "rating" // default decending order... // sort=-rating accending order
 
 
         // rating,year // rating year
@@ -109,7 +110,7 @@ const getBlogs = async (req, res) => {
             }
         }).skip(skip).limit(limit).sort(sort)
 
-        
+
 
 
         //  search logic...
@@ -122,9 +123,9 @@ const getBlogs = async (req, res) => {
 
         res.status(200).json({
             status: "success",
-            page:page,
-            limit:limit,
-            totalBlog:totalBlog,
+            page: page,
+            limit: limit,
+            totalBlog: totalBlog,
             data: {
                 all_Blog
             }
@@ -142,17 +143,18 @@ const getBlogs = async (req, res) => {
 const updateBlog = async (req, res) => {
     try {
         let payload = {
-            title:req.body.title,
-            snippet:req.body.snippet,
-            description:req.body.description,
+            title: req.body.title,
+            snippet: req.body.snippet,
+            description: req.body.description,
             author: req.user._id,
-            image:req.body.image
+            image: req.body.image
 
         }
         let id = req.params.id
 
         const updated_blog = await blogModel.findByIdAndUpdate(id, payload, {
-            new: true
+            new: true,
+            runValidators: true
         })
         res.status(200).json({
             status: "success",

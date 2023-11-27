@@ -37,13 +37,15 @@ const blogSchema = new Schema({
         type:Number,
         required:[true,"rating"],
         default:1,
+        min:[1,"please enter above 1"],
+        max:[5,"please enter below 5"],
         validator:{
-            validate:function(){
+            validate:function(value){
                 if(userModel.role !== "user"){
                     return value>=1 && value<=5;
                 }
             },
-            message:"you are not authorize"
+            message:"Rating should be between 1 to 5"
         }
     }
 })
