@@ -1,7 +1,7 @@
 const blogModel = require("../models/blog")
+const asyncErrorHandler = require("../Utils/asyncErrorHandler")
 
-const postBlog = async (req, res) => {
-    try {
+const postBlog = asyncErrorHandler(async (req, res) => {
         let user = req.user
         const newBlog = await blogModel.create({
             title: req.body.title,
@@ -16,18 +16,11 @@ const postBlog = async (req, res) => {
                 newBlog
             }
         })
-    } catch (error) {
-        res.status(401).json({
-            status: "failed",
-            data: {
-                msg: error
-            }
-        })
-    }
-}
+})
 
-const getBlog = async (req, res) => {
-    try {
+
+
+const getBlog = asyncErrorHandler(async (req, res) => {
         let blog = await blogModel.findById(req.params.id)
         res.status(200).json({
             status: "success",
@@ -35,18 +28,9 @@ const getBlog = async (req, res) => {
                 blog
             }
         })
-    } catch (err) {
-        res.status(401).json({
-            status: "failed",
-            data: {
-                msg: err.message
-            }
-        })
-    }
-}
+})
 
-const updateRating = async (req, res) => {
-    try {
+const updateRating = asyncErrorHandler(async (req, res) => {
         let payload = {
             rating: req.body.rating
         }
@@ -62,18 +46,10 @@ const updateRating = async (req, res) => {
                 updated_blog
             }
         })
-    } catch (error) {
-        res.status(401).json({
-            status: "failed",
-            data: {
-                msg: error.message
-            }
-        })
-    }
-}
+})
 
-const getBlogs = async (req, res) => {
-    try {
+const getBlogs =asyncErrorHandler(async (req, res) => {
+    
         let page = req.query.page * 1 || 1 // *1 to convert string to number.
         let limit = req.query.limit * 1 || 3
 
@@ -130,15 +106,7 @@ const getBlogs = async (req, res) => {
                 all_Blog
             }
         })
-    } catch (err) {
-        res.status(401).json({
-            status: "failed",
-            data: {
-                msg: err.message
-            }
-        })
-    }
-}
+})
 
 const updateBlog = async (req, res) => {
     try {

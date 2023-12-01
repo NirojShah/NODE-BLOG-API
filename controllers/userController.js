@@ -1,51 +1,83 @@
 const userModel = require("../models/userModel")
+const asyncErrorHandler = require("../Utils/asyncErrorHandler")
 const jwt = require("jsonwebtoken")
+const CustomError = require("../Utils/CustomError")
 
-const genToken = async (id)=>{
-    return await jwt.sign({id:id},process.env.JWT_SECRET,{
-        expiresIn:24*60*60
+const genToken = async (id) => {
+    return await jwt.sign({
+        id: id
+    }, process.env.JWT_SECRET, {
+        // expiresIn: 24 * 60 * 60
+        expiresIn: '1d'
     })
 }
 
-let signup = async (req, res) => {
-    try {
-        // verify whether user is present already...
-        const existingUser = await userModel.findOne({
-            email: req.body.email
-        })
-        if (existingUser) {
-            return (
-                res.status(401).json({
-                    status: "failed",
-                    data: {
-                        msg: "user exists already, try logging in."
-                    }
-                })
-            )
+let signup = asyncErrorHandler(async (req, res, next) => {
+    // verify whether user is present already...
+    const existingUser = await userModel.findOne({
+        email: req.body.email
+    })
+    // if (existingUser) {
+        // return (
+        // res.status(401).json({
+        //     status: "failed",
+        //     data: {
+        //         msg: "user exists already, try logging in."
+        //     }
+        // })
+        // )
+        // const err = new CustomError(401, "user exists already, try logging in.")
+        // next(err)
+
+
+    // }
+
+    let new_user = await userModel.create(
+        req.body
+    )
+    const token = genToken(new_user._id)
+    res.status(200).json({
+        status: "success",
+        token,
+        data: {
+            new_user
         }
+    })
+})
 
-        let new_user = await userModel.create(
-            req.body
-        )
-        const token = genToken(new_user._id)
-        res.status(200).json({
-            status: "success",
-            token,
-            data: {
-                new_user
-            }
-        })
-    } catch (err) {
-        res.status(401).json({
-            status: "failed",
-            data: {
-                msg: err.message
-            }
-        })
+
+const login = asyncErrorHandler(async (req, res, next) => {
+    const existingUser = await userModel.findOne({
+        email: req.body.email
+    })
+
+    if (!existingUser || !await existingUser.comparePassword(req.body.password, existingUser.password)) {
+        // return res.status(400).json({
+        //     status: "failed",
+        //     data: {
+        //         msg: "you are not an existing user, please signup"
+        //     }
+        // })
+
+        const err = new CustomError(401, "you are not an existing user, please signup")
+        next(err)
     }
-}
 
-const all_User = async (req, res) => {
+    let token = await genToken(existingUser._id)
+
+    res.status(200).json({
+        status: "success",
+        token,
+        data: {
+            existingUser
+        }
+    })
+})
+
+
+
+
+const all_User = (async (req, res) => {
     try {
         let allUser = await userModel.find()
         res.status(200).json({
@@ -63,7 +95,7 @@ const all_User = async (req, res) => {
             }
         })
     }
-}
+})
 
 const get_user = async (req, res) => {
     try {
@@ -124,40 +156,7 @@ const deleteUser = async (req, res) => {
     }
 }
 
-const login = async (req, res) => {
-    try {
-        const existingUser = await userModel.findOne({
-            email: req.body.email
-        })
-        
-        if (!existingUser || !await existingUser.comparePassword(req.body.password,existingUser.password)) {  
-            return res.status(400).json({
-                status: "failed",
-                data: {
-                    msg: "you are not an existing user, please signup"
-                }
-            })
-        }
-        
-        let token = await genToken(existingUser._id)
 
-        res.status(200).json({
-            status: "success",
-            token,
-            data: {
-                existingUser
-            }
-        })
-
-    } catch (error) {
-        res.status(400).json({
-            status: "failed",
-            data: {
-                msg: error.message
-            }
-        })
-    }
-}
 
 module.exports = {
     signup,
