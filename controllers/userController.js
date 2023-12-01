@@ -7,7 +7,7 @@ const genToken = async (id) => {
     return await jwt.sign({
         id: id
     }, process.env.JWT_SECRET, {
-        // expiresIn: 24 * 60 * 60
+        // expiresIn: 24 * 60 * 60 // one day
         expiresIn: '1d'
     })
 }

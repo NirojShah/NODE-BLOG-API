@@ -50,15 +50,15 @@ const castError = (err)=>{
     return error
 }
 
-const TokenExpiredError = (err) =>{
-    let msg = `${err.message} at ${err.expiredAt}.`
-    let error = new CustomError(400,msg)
+const handleTokenExpiredError = (err) =>{
+    let msg = `${err.message} at ${err.expiredAt} please log in once again.`
+    let error = new CustomError(403,msg)
     return error
 }
 
-const jsonWebTokenError = (err)=>{
-    let msg = `${err.message } please verify`
-    let error = new CustomError(400,msg)
+const handleJsonWebTokenError = (err)=>{
+    let msg = `${err.message } please login once again`
+    let error = new CustomError(403,msg)
     return error
 }
 
@@ -82,10 +82,10 @@ module.exports = (err, req, res, next) => {
             err = castError(err)
         }
         if(err.name === "TokenExpiredError"){
-            err = TokenExpiredError(err)
+            err = handleTokenExpiredError(err)
         }
         if(err.name === "JsonWebTokenError"){
-            err = jsonWebTokenError(err)
+            err = handleJsonWebTokenError(err)
         }
         prodError(res, err)
     }
