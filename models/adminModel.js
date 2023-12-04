@@ -6,7 +6,7 @@ const {
 const validator = require("validator")
 const bcrypt = require("bcryptjs")
 
-let userSchema = new Schema({
+let adminSchema = new Schema({
     name: {
         type: String,
         required: [true, "name field can't be empty"],
@@ -39,21 +39,21 @@ let userSchema = new Schema({
     role: {
         type: String,
         enum: {
-            values:["user"],
+            values:["admin"],
             message:`{VALUE} role is not defined`
         },
-        default: "user"
+        default: "admin"
     }
 
 }, {
     timestamps: true
 },)
 
-userSchema.methods.comparePassword = async function(userPassword,dbPassword){
+adminSchema.methods.comparePassword = async function(userPassword,dbPassword){
     return await bcrypt.compare(userPassword,dbPassword)
 }
 
-userSchema.pre("save",async function(next){
+adminSchema.pre("save",async function(next){
     this.password = await bcrypt.hash(this.password,10)
     next()
 })
@@ -65,4 +65,4 @@ userSchema.pre("save",async function(next){
 // })
 
 
-module.exports = model("user", userSchema)
+module.exports = model("admin", adminSchema)

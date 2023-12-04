@@ -1,6 +1,11 @@
 const express = require("express");
+const {login,signup} = require("../controllers/admincontroller")
 
 
-let adminRoute = express.Router()
+const adminRoute = express.Router()
 
-adminRoute.get("/",auth,veri)
+adminRoute.post("/login",login)
+adminRoute.post("/signup",signup)
+
+
+module.exports = adminRoute

@@ -1,5 +1,6 @@
 const blogModel = require("../models/blog")
 const ratingModel = require("../models/rating")
+const userModel = require("../models/userModel")
 const asyncErrorHandler = require("../Utils/asyncErrorHandler")
 
 const postBlog = asyncErrorHandler(async (req, res) => {
@@ -166,6 +167,17 @@ const getByAuthor = asyncErrorHandler(async (req, res) => {
         })
 })
 
+const findAuthor = asyncErrorHandler(async (req,res)=>{
+    let authorId = req.params.id
+    let authorData = await userModel.findById(authorId)
+    res.status(201).json({
+        status:"success",
+        data:{
+            name:authorData.name
+        }
+    })
+})
+
 
 
 module.exports = {
@@ -176,5 +188,6 @@ module.exports = {
     postBlog,
     getByAuthor,
     postRating,
-    getRating
+    getRating,
+    findAuthor
 }

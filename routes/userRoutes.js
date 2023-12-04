@@ -8,10 +8,12 @@ const {
     login
 } = require("../controllers/userController")
 
-let userRouter = express.Router()
+const userRouter = express.Router()
 
 userRouter.post("/signup", signup)
 userRouter.post("/login", login)
+
+
 
 
 userRouter.get("/", all_User)

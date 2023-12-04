@@ -1,7 +1,7 @@
 const express = require("express")
 const {auth,verifyRole}  = require("../middlewares/authMiddleware")
 const blogModel = require("../models/blog")
-const {deleteBlog,getBlog,postBlog,updateBlog,getBlogs,getByAuthor,postRating,getRating} = require("../controllers/blogController")
+const {deleteBlog,getBlog,postBlog,updateBlog,getBlogs,getByAuthor,postRating,getRating,findAuthor} = require("../controllers/blogController")
 
 let blogRouter = express.Router()
 
@@ -13,5 +13,6 @@ blogRouter.patch("/:id",auth,verifyRole(["author"]),updateBlog)
 blogRouter.post("/rating/:id",auth,verifyRole(["user"]),postRating)
 blogRouter.get("/rating/:id",auth,verifyRole(["author","user","admin"]),getRating)
 blogRouter.delete("/:id",auth,verifyRole(["admin","author"]),deleteBlog)
+blogRouter.get("/author/:id",auth,findAuthor)
 module.exports = blogRouter
 

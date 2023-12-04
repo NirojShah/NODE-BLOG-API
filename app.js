@@ -3,14 +3,21 @@ const userRouter = require("./routes/userRoutes")
 const blogRouter = require("./routes/blogRoute")
 const globalErrorController = require("./controllers/globalErrorController")
 const CustomError = require("./Utils/CustomError")
+const cors = require("cors")
+const authorRouter = require("./routes/authorRoute")
+const adminRouter = require("./routes/adminRoute")
 
 // const auth = require("./middlewares/authMiddleware")
 
 
 const app = express(userRouter)
 
+app.use(cors())
+
 app.use(express.json())
 app.use("/app/v1/user", userRouter)
+app.use("/app/v1/author",authorRouter)
+app.use("/app/v1/admin",adminRouter)
 
 
 // app.use("/app/v1/profile",auth,blogRoute) ==> we can pass here also
