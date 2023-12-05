@@ -10,7 +10,8 @@ let adminSchema = new Schema({
     name: {
         type: String,
         required: [true, "name field can't be empty"],
-        trim: true
+        trim: true,
+        default:"admin"
     },
     email: {
         type: String,

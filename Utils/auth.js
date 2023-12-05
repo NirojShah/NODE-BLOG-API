@@ -53,6 +53,7 @@ const loginWrapper = (Model)=>{
         const existingUser = await Model.findOne({
             email: req.body.email
         })
+        
     
         if (!existingUser || !await existingUser.comparePassword(req.body.password, existingUser.password)) {
             // return res.status(400).json({
