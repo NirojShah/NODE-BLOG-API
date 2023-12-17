@@ -53,22 +53,11 @@ const loginWrapper = (Model)=>{
         const existingUser = await Model.findOne({
             email: req.body.email
         })
-        
-    
         if (!existingUser || !await existingUser.comparePassword(req.body.password, existingUser.password)) {
-            // return res.status(400).json({
-            //     status: "failed",
-            //     data: {
-            //         msg: "you are not an existing user, please signup"
-            //     }
-            // })
-    
             const err = new CustomError(401, "you are not an existing user, please signup")
             next(err)
         }
-    
         let token = await genToken(existingUser._id)
-    
         res.status(200).json({
             status: "success",
             token,

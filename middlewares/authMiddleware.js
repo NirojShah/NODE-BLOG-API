@@ -35,7 +35,7 @@ const auth = asyncErrorHandler(async (req, res, next) => {
 
     users = await Promise.all(users)
 
-    let authorizedUser = await users.filter(doc=>doc !== null)
+    let authorizedUser = await users.filter(doc => doc !== null)
 
 
     if (!authorizedUser) {

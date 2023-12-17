@@ -1,6 +1,6 @@
 const blogModel = require("../models/blog")
 const ratingModel = require("../models/rating")
-const userModel = require("../models/userModel")
+const authorModel = require("../models/authorModel")
 const asyncErrorHandler = require("../Utils/asyncErrorHandler")
 
 const postBlog = asyncErrorHandler(async (req, res) => {
@@ -48,7 +48,7 @@ const postRating = asyncErrorHandler(async (req, res) => {
 
 const getRating = asyncErrorHandler(async(req,res)=>{
     let blogId = req.params.id
-    const ratings = await ratingModel.find({blogId:blogId})
+    const ratings = await ratingModel.find({blog:blogId}).populate("user")
     res.status(200).json({
         status:"success",
         data:{
@@ -95,7 +95,7 @@ const getBlogs =asyncErrorHandler(async (req, res) => {
                 $regex: search,
                 $options: 'i'
             }
-        }).skip(skip).limit(limit).sort(sort)
+        }).skip(skip).limit(limit).sort(sort).populate("author")
 
 
 
@@ -169,7 +169,9 @@ const getByAuthor = asyncErrorHandler(async (req, res) => {
 
 const findAuthor = asyncErrorHandler(async (req,res)=>{
     let authorId = req.params.id
-    let authorData = await userModel.findById(authorId)
+    console.log(authorId)
+    let authorData = await authorModel.findOne({"_id":authorId})
+    console.log(authorData.name)
     res.status(201).json({
         status:"success",
         data:{
@@ -177,9 +179,6 @@ const findAuthor = asyncErrorHandler(async (req,res)=>{
         }
     })
 })
-
-
-
 module.exports = {
     getBlogs,
     getBlog,

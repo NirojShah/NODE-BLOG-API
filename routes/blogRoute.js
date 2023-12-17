@@ -11,7 +11,7 @@ blogRouter.get("/",auth,getBlogs)
 blogRouter.get("/:id",auth,getBlog)
 blogRouter.patch("/:id",auth,verifyRole(["author"]),updateBlog)
 blogRouter.post("/rating/:id",auth,verifyRole(["user"]),postRating)
-blogRouter.get("/rating/:id",auth,verifyRole(["author","user","admin"]),getRating)
+blogRouter.get("/rating/:id",auth,verifyRole(["author","user","admin"]),getRating) 
 blogRouter.delete("/:id",auth,verifyRole(["admin","author"]),deleteBlog)
 blogRouter.get("/author/:id",auth,findAuthor)
 module.exports = blogRouter

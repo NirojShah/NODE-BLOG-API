@@ -9,11 +9,11 @@ let ratingSchema = new Schema({
         max:[5,"please provide rating below 5"],
         default:1
     },
-    userId:{
+    user:{
         type:Schema.Types.ObjectId,
         ref:"user" // collection name where userId will stored
     },
-    blogId:{
+    blog:{
         type:Schema.Types.ObjectId,
         ref:"blog" // collection name where blogId will stored
     },
