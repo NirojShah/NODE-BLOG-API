@@ -58,6 +58,11 @@ const loginWrapper = (Model)=>{
             next(err)
         }
         let token = await genToken(existingUser._id)
+        res.cookie("jwt", token, {
+            maxAge: 24 * 60 * 60 * 1000,
+            secure: true,
+            httpOnly: true
+        })
         res.status(200).json({
             status: "success",
             token,

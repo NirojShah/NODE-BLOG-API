@@ -6,11 +6,14 @@ const CustomError = require("./Utils/CustomError")
 const cors = require("cors")
 const authorRouter = require("./routes/authorRoute")
 const adminRouter = require("./routes/adminRoute")
+const { stripeRoute } = require("./routes/stripeRoute")
 
 // const auth = require("./middlewares/authMiddleware")
 
 
 const app = express(userRouter)
+
+app.use(express.static("public"))
 
 app.use(cors())
 
@@ -23,6 +26,7 @@ app.use("/app/v1/admin",adminRouter)
 // app.use("/app/v1/profile",auth,blogRoute) ==> we can pass here also
 app.use("/app/v1/blogs", blogRouter)
 
+app.use("/app/v1/payment",stripeRoute)
 
 
 // Exept above route any other route will throw error...

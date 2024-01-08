@@ -13,6 +13,12 @@ const blogSchema = new Schema({
         trim: true,
         required: [true, "Title is required"]
     },
+    price:{
+        type:Number,
+        default:9,
+        min:[9,"Price should be minimum 9"],
+        max:[200,'Price should be below 200']
+    },
     snippet: {
         type: String,
         trim: true,
@@ -30,7 +36,7 @@ const blogSchema = new Schema({
 
     },
     image: {
-        type: [String],
+        type: [""],
         default: "https://digitalmarketerschicago.com/wp-content/uploads/2019/07/difference-between-blogs-and-landing-pages.jpg"
     },
     rating:{
