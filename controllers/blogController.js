@@ -2,17 +2,34 @@ const blogModel = require("../models/blog")
 const ratingModel = require("../models/rating")
 const authorModel = require("../models/authorModel")
 const asyncErrorHandler = require("../Utils/asyncErrorHandler")
+const PATH = require("path")
 
 const postBlog = asyncErrorHandler(async (req, res) => {
-    console.log(req.file)
     let user = req.user
+    let {
+        fieldname,
+        originalname,
+        encoding,
+        destination,
+        mimetype,
+        filename,
+        path
+    } = req.file
+    const dir = PATH.join(__dirname, "../" + path)
     const newBlog = await blogModel.create({
         title: req.body.title,
         snippet: req.body.snippet,
         description: req.body.description,
-        image: req.body.image,
         author: user._id,
-        image: req.file,
+        image: {
+            fieldname,
+            originalname,
+            encoding,
+            destination,
+            mimetype,
+            filename,
+            dir
+        },
         price: req.body.price
     })
     res.status(201).json({
@@ -25,12 +42,62 @@ const postBlog = asyncErrorHandler(async (req, res) => {
 
 const getBlog = asyncErrorHandler(async (req, res) => {
     let blog = await blogModel.findById(req.params.id).populate("author")
-    res.status(200).json({
-        status: "success",
-        data: {
-            blog
+    if (req.user.role === "user") {
+        if (blog.ownedBy.includes(req.user._id)) {
+            res.status(200).json({
+                status: "success",
+                data: {
+                    blog: {
+                        author: blog.author,
+                        title: blog.title,
+                        snippet: blog.snippet,
+                        description: blog.description,
+                        rating: blog.rating,
+                        price: blog.price,
+                        iamge: blog.image,
+                        own: true
+
+                    }
+                }
+            })
+        } else {
+            res.status(200).json({
+                status: "success",
+                data: {
+                    blog: {
+                        author: blog.author,
+                        title: blog.title,
+                        snippet: blog.snippet,
+                        description: blog.description.slice(0, 520),
+                        rating: blog.rating,
+                        price: blog.price,
+                        iamge: blog.image,
+                        own: false
+                    }
+                }
+            })
         }
-    })
+    } else if (req.user.role === "admin" || req.user.role === "author") {
+
+        res.status(200).json({
+            status: "success",
+            data: {
+                blog: {
+                    author: blog.author,
+                    title: blog.title,
+                    snippet: blog.snippet,
+                    description: blog.description,
+                    rating: blog.rating,
+                    price: blog.price,
+                    iamge: blog.image,
+                    own: true
+
+                }
+            }
+        })
+
+    }
+
 })
 
 const postRating = asyncErrorHandler(async (req, res) => {
@@ -144,7 +211,7 @@ const getBlogs = asyncErrorHandler(async (req, res) => {
 })
 
 const updateBlog = asyncErrorHandler(async (req, res) => {
-    console.log(req.file)
+
     let payload = {
         title: req.body.title,
         snippet: req.body.snippet,
