@@ -18,7 +18,6 @@ const checkoutPage = async (req, res) => {
 
 const payment = async (req, res) => {
     const blog = await blogModel.findById(req.params.id);
-    console.log(blog)
     const session = await stripe.checkout.sessions.create({
         line_items: [{
             price_data: {
@@ -31,25 +30,23 @@ const payment = async (req, res) => {
             quantity: 1,
         }, ],
         mode: "payment",
-        success_url: `${MY_DOMAIN}/success/${blog._id}/`,
-        cancel_url: `${MY_DOMAIN}/cancel`,
+        success_url: `${MY_DOMAIN}success/${blog._id}/`,
+        cancel_url: `${MY_DOMAIN}cancel`,
     });
 
     res.redirect(303, session.url);
 };
 
 const successPage = async (req, res) => {
-    const blogId = req.params.blogId
-    const buyedBlog = await Blog.findById(blogId)
-    await buyedBlog.buyedBy.push(req.user._id)
+    const blogId = req.params.id
+    const buyedBlog = await blogModel.findById(blogId)
+    await buyedBlog.ownedBy.push(req.user._id)
     const newB = await buyedBlog.save()
-
-    res.render("Checkout/success");
 
 };
 
 const cancelPage = (req, res) => {
-    res.render("Checkout/cancel");
+
 };
 
 module.exports = {
