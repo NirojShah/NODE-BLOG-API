@@ -13,11 +13,11 @@ const blogSchema = new Schema({
         trim: true,
         required: [true, "Title is required"]
     },
-    price:{
-        type:Number,
-        default:9,
-        min:[9,"Price should be minimum 9"],
-        max:[200,'Price should be below 200']
+    price: {
+        type: Number,
+        default: 9,
+        min: [9, "Price should be minimum 9"],
+        max: [200, 'Price should be below 200']
     },
     snippet: {
         type: String,
@@ -26,7 +26,6 @@ const blogSchema = new Schema({
     },
     description: {
         type: String,
-        trim: true,
         required: [true, "Description is required"]
     },
     author: {
@@ -39,21 +38,26 @@ const blogSchema = new Schema({
         type: [""],
         default: "https://digitalmarketerschicago.com/wp-content/uploads/2019/07/difference-between-blogs-and-landing-pages.jpg"
     },
-    rating:{
-        type:Number,
-        required:[true,"rating"],
-        default:1,
-        min:[1,"please enter above 1"],
-        max:[5,"please enter below 5"],
-        validator:{
-            validate:function(value){
-                if(userModel.role !== "user"){
-                    return value>=1 && value<=5;
+    rating: {
+        type: Number,
+        required: [true, "rating"],
+        default: 1,
+        min: [1, "please enter above 1"],
+        max: [5, "please enter below 5"],
+        validator: {
+            validate: function (value) {
+                if (userModel.role !== "user") {
+                    return value >= 1 && value <= 5;
                 }
             },
-            message:"Rating should be between 1 to 5"
+            message: "Rating should be between 1 to 5"
         }
-    }
+    },
+    ownedBy: [{
+        type: Schema.ObjectId,
+        ref: "user",
+        unique: true
+    }]
 })
 
 module.exports = model("blog", blogSchema)
