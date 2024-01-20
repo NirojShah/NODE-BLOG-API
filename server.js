@@ -10,7 +10,7 @@ dotenv.config({
 let PORT = process.env.PORT
 let MONGOLOCAL_URL = process.env.MONGOLOCAL_URL
 
-mongoose.connect(process.env.MONGOCLOUD_URL).then(() => {
+mongoose.connect(MONGOLOCAL_URL).then(() => {
     console.log("DB CONNECTED..")
 }).catch((err) => {
     console.log(err)
