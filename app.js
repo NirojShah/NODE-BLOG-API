@@ -8,12 +8,19 @@ const authorRouter = require("./routes/authorRoute")
 const adminRouter = require("./routes/adminRoute")
 const { stripeRoute } = require("./routes/stripeRoute")
 
+const session = require("express-session")
+const passport = require("passport")
+
+
+// const googleRoute = require("./routes/googleRoute")
+
+
 // const auth = require("./middlewares/authMiddleware")
 
 
 const app = express(userRouter)
 
-app.use(express.static("public"))
+app.use(express.static(__dirname+"/public"))
 
 app.use(cors())
 
@@ -28,6 +35,11 @@ app.use("/app/v1/blogs", blogRouter)
 
 app.use("/app/v1/payment",stripeRoute)
 
+
+// Google Auth
+
+// app.use(passport.initialize())
+// app.use("/google",googleRoute)
 
 // Exept above route any other route will throw error...
 
